@@ -234,7 +234,7 @@ export function multiTime() {
       ? acceptableFormats[0].specifier
       : "%Y";
 
-    return d3.utcFormat(specifier)(d);
+    return d3.timeFormat(specifier)(d);
   };
 }
 

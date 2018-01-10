@@ -131,19 +131,19 @@ export class Time extends QuantitativeScale<Date> {
   public static timeIntervalToD3Time(timeInterval: string): d3.CountableTimeInterval {
     switch (timeInterval) {
       case TimeInterval.second:
-        return d3.timeSecond;
+        return d3.utcSecond;
       case TimeInterval.minute:
-        return d3.timeMinute;
+        return d3.utcMinute;
       case TimeInterval.hour:
-        return d3.timeHour;
+        return d3.utcHour;
       case TimeInterval.day:
-        return d3.timeDay;
+        return d3.utcDay;
       case TimeInterval.week:
-        return d3.timeWeek;
+        return d3.utcWeek;
       case TimeInterval.month:
-        return d3.timeMonth;
+        return d3.utcMonth;
       case TimeInterval.year:
-        return d3.timeYear;
+        return d3.utcYear;
       default:
         throw Error("TimeInterval specified does not exist: " + timeInterval);
     }
