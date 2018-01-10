@@ -4,6 +4,7 @@
  */
 
 import * as d3 from "d3";
+import * as Moment from "moment";
 import * as Typesettable from "typesettable";
 
 import * as Animators from "../animators";
@@ -281,7 +282,7 @@ export class Bar<X, Y> extends XYPlot<X, Y> {
       }
 
       if (lengthScale instanceof Scales.Time) {
-        return new Date(0);
+        return Moment(0);
       }
 
       return 0;

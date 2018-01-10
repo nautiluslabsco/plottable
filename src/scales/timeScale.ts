@@ -4,12 +4,13 @@
  */
 
 import * as d3 from "d3";
+import * as Moment from "moment";
 
 import { TimeInterval } from "../axes/timeAxis";
 
 import { QuantitativeScale } from "./quantitativeScale";
 
-export class Time extends QuantitativeScale<Date> {
+export class Time extends QuantitativeScale<Moment.Moment> {
   private _d3Scale: d3.ScaleTime<number, number>;
 
   /**
@@ -28,47 +29,47 @@ export class Time extends QuantitativeScale<Date> {
    *
    * @param {string} interval A string specifying the interval unit.
    * @param {number?} [step] The number of multiples of the interval between consecutive ticks.
-   * @return {Date[]}
+   * @return {Moment.Moment[]}
    */
-  public tickInterval(interval: string, step: number = 1): Date[] {
+  public tickInterval(interval: string, step: number = 1): Moment.Moment[] {
     // temporarily creats a time scale from our linear scale into a time scale so we can get access to its api
     const tempScale = d3.scaleTime();
     const d3Interval = Time.timeIntervalToD3Time(interval).every(step);
     tempScale.domain(this.domain());
     tempScale.range(this.range());
-    return tempScale.ticks(d3Interval);
+    return tempScale.ticks(d3Interval).map(x => Moment(x));
   }
 
-  protected _setDomain(values: Date[]) {
+  protected _setDomain(values: Moment.Moment[]) {
     if (values[1] < values[0]) {
       throw new Error("Scale.Time domain values must be in chronological order");
     }
     return super._setDomain(values);
   }
 
-  protected _defaultExtent(): Date[] {
-    return [new Date("1970-01-01"), new Date("1970-01-02")];
+  protected _defaultExtent(): Moment.Moment[] {
+    return [Moment("1970-01-01"), Moment("1970-01-02")];
   }
 
-  protected _expandSingleValueDomain(singleValueDomain: Date[]): Date[] {
+  protected _expandSingleValueDomain(singleValueDomain: Moment.Moment[]): Moment.Moment[] {
     const startTime = singleValueDomain[0].valueOf();
     const endTime = singleValueDomain[1].valueOf();
     if (startTime === endTime) {
-      const startDate = new Date(startTime);
-      startDate.setDate(startDate.getDate() - 1);
-      const endDate = new Date(endTime);
-      endDate.setDate(endDate.getDate() + 1);
+      const startDate = Moment(startTime);
+      startDate.date(startDate.date() - 1);
+      const endDate = Moment(endTime);
+      endDate.date(endDate.date() + 1);
       return [startDate, endDate];
     }
     return singleValueDomain;
   }
 
-  public scale(value: Date): number {
+  public scale(value: Moment.Moment): number {
     return this._d3Scale(value);
   }
 
   public scaleTransformation(value: number) {
-    return this.scale(new Date(value));
+    return this.scale(Moment(value));
   }
 
   public invertedTransformation(value: number) {
@@ -86,16 +87,16 @@ export class Time extends QuantitativeScale<Date> {
   }
 
   public setTransformationDomain([domainMin, domainMax]: [number, number]) {
-    this.domain([new Date(domainMin), new Date(domainMax)]);
+    this.domain([Moment(domainMin), Moment(domainMax)]);
   }
 
   protected _getDomain() {
     return this._backingScaleDomain();
   }
 
-  protected _backingScaleDomain(): Date[]
-  protected _backingScaleDomain(values: Date[]): this
-  protected _backingScaleDomain(values?: Date[]): any {
+  protected _backingScaleDomain(): Moment.Moment[]
+  protected _backingScaleDomain(values: Moment.Moment[]): this
+  protected _backingScaleDomain(values?: Moment.Moment[]): any {
     if (values == null) {
       return this._d3Scale.domain();
     } else {
@@ -113,15 +114,15 @@ export class Time extends QuantitativeScale<Date> {
   }
 
   public invert(value: number) {
-    return this._d3Scale.invert(value);
+    return Moment(this._d3Scale.invert(value));
   }
 
-  public defaultTicks(): Date[] {
-    return this._d3Scale.ticks(Time._DEFAULT_NUM_TICKS);
+  public defaultTicks(): Moment.Moment[] {
+    return this._d3Scale.ticks(Time._DEFAULT_NUM_TICKS).map(x => Moment(x));
   }
 
-  protected _niceDomain(domain: Date[]) {
-    return this._d3Scale.copy().domain(domain).nice().domain();
+  protected _niceDomain(domain: Moment.Moment[]) {
+    return this._d3Scale.copy().domain(domain).nice().domain().map(x => Moment(x);
   }
 
   /**

@@ -4,6 +4,7 @@
  */
 
 import * as d3 from "d3";
+import * as Moment from "moment";
 import * as Typesettable from "typesettable";
 
 import { Formatter } from "../core/formatters";
@@ -203,7 +204,7 @@ export class Time extends Axis<Date> {
 
   private _tierLabelPositions: TierLabelPosition[] = [];
 
-  private static _LONG_DATE = new Date(9999, 8, 29, 12, 59, 9999);
+  private static _LONG_DATE = Moment(new Date(9999, 8, 29, 12, 59, 9999));
 
   /**
    * Constructs a Time Axis.
@@ -468,13 +469,13 @@ export class Time extends Axis<Date> {
 
   private _renderTierLabels(container: SimpleSelection<void>, config: TimeAxisTierConfiguration, index: number) {
     const tickPos = this._getTickValuesForConfiguration(config);
-    let labelPos: Date[] = [];
+    let labelPos: Moment.Moment[] = [];
     if (this._tierLabelPositions[index] === "between" && config.step === 1) {
       tickPos.map((datum: any, i: any) => {
         if (i + 1 >= tickPos.length) {
           return;
         }
-        labelPos.push(new Date((tickPos[i + 1].valueOf() - tickPos[i].valueOf()) / 2 + tickPos[i].valueOf()));
+        labelPos.push(Moment((tickPos[i + 1].valueOf() - tickPos[i].valueOf()) / 2 + tickPos[i].valueOf()));
       });
     } else {
       labelPos = tickPos;
@@ -512,7 +513,7 @@ export class Time extends Axis<Date> {
     tickLabels.selectAll("text").text(config.formatter).style("text-anchor", anchor);
   }
 
-  private _renderTickMarks(tickValues: Date[], index: number) {
+  private _renderTickMarks(tickValues: Moment.Moment[], index: number) {
     const tickMarksUpdate = this._tierMarkContainers[index].selectAll("." + Axis.TICK_MARK_CLASS).data(tickValues);
     const tickMarks =
       tickMarksUpdate
