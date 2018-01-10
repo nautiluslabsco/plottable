@@ -51,8 +51,8 @@ export class Time extends QuantitativeScale<Date> {
   }
 
   protected _expandSingleValueDomain(singleValueDomain: Date[]): Date[] {
-    const startTime = singleValueDomain[0].getTime();
-    const endTime = singleValueDomain[1].getTime();
+    const startTime = singleValueDomain[0].valueOf();
+    const endTime = singleValueDomain[1].valueOf();
     if (startTime === endTime) {
       const startDate = new Date(startTime);
       startDate.setDate(startDate.getDate() - 1);
@@ -72,7 +72,7 @@ export class Time extends QuantitativeScale<Date> {
   }
 
   public invertedTransformation(value: number) {
-    return this.invert(value).getTime();
+    return this.invert(value).valueOf();
   }
 
   public getTransformationExtent() {
