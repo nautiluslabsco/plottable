@@ -38,7 +38,15 @@ const LINE_ATTRIBUTES =  [
  */
 export function makeLineCanvasDrawStep(d3LineFactory: () => d3.Line<any>): CanvasDrawStep {
   return (context: CanvasRenderingContext2D, data: any[][], attrToAppliedProjector: AttributeToAppliedProjector) => {
-    const lineStyle = resolveAttributes(attrToAppliedProjector, LINE_ATTRIBUTES, data[0], 0);
-    renderLine(context, d3LineFactory(), data[0], lineStyle);
+    let start = 0;
+    let lastStyle = resolveAttributes(attrToAppliedProjector, LINE_ATTRIBUTES, data[0], 0);
+    for (let index = 1; index < data[0].length; index++) {
+      const lineStyle = resolveAttributes(attrToAppliedProjector, LINE_ATTRIBUTES, data[0], index);
+      if (lineStyle["opacity"] !== lastStyle["opacity"] || index === data[0].length - 1) {
+        renderLine(context, d3LineFactory(), data[0].slice(start, index + 1), lastStyle);
+        start = index;
+        lastStyle = lineStyle;
+      }
+    }
   };
 }
