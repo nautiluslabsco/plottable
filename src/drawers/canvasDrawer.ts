@@ -66,9 +66,30 @@ export const ContextStyleAttrs = [
 ];
 
 /**
- * DEPRECATED. Precompute the concatted array and use `resolveAttributes`
- * instead of using this in the inner loop.
+ * attributesEqual performs a shallow equality check on two attributes objects.
+ * @param a
+ * @param b
+ * @returns true if a and b are equavalent false otherwise
  */
+export function attributesEqual(a: Record<string, any>, b: Record<string, any>): boolean {
+  if (a === b) {
+    // literally the same object
+    return true;
+  }
+
+  for (const attrKey of Object.keys(a)) {
+    if (!b.hasOwnProperty(attrKey) || a[attrKey] !== b[attrKey]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+* DEPRECATED. Precompute the concatted array and use `resolveAttributes`
+* instead of using this in the inner loop.
+*/
 export function resolveAttributesSubsetWithStyles(projector: AttributeToAppliedProjector, extraKeys: string[], datum: any, index: number) {
   const attrKeys = ContextStyleAttrs.concat(extraKeys);
   return resolveAttributes(projector, attrKeys, datum, index);
