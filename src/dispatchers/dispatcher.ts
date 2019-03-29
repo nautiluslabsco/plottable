@@ -13,7 +13,9 @@ export class Dispatcher {
    * eventname is a DOM event name like "mouseup", "touchstart", etc. The
    * callback is simply registered to the event callback with bubbling.
    */
-  protected _eventToProcessingFunction: { [eventName: string]: (e: Event) => any; } = {};
+  protected _eventToProcessingFunction: {
+    [eventName: string]: (e: Event) => any;
+  } = {};
 
   /**
    * All listeners are registered to this `EventTarget` and events are then
@@ -23,12 +25,15 @@ export class Dispatcher {
    */
   protected _eventTarget: EventTarget = document;
 
-  private _eventNameToCallbackSet: { [eventName: string]: Utils.CallbackSet<Function>; } = {};
+  private _eventNameToCallbackSet: {
+    [eventName: string]: Utils.CallbackSet<Function>;
+  } = {};
   private _connected = false;
 
   private _hasNoCallbacks() {
     const eventNames = Object.keys(this._eventNameToCallbackSet);
-    for (let i = 0; i < eventNames.length; i++) { // for-loop so return can break out
+    for (let i = 0; i < eventNames.length; i++) {
+      // for-loop so return can break out
       if (this._eventNameToCallbackSet[eventNames[i]].size !== 0) {
         return false;
       }
@@ -43,7 +48,7 @@ export class Dispatcher {
     Object.keys(this._eventToProcessingFunction).forEach((event: string) => {
       const processingFunction = this._eventToProcessingFunction[event];
       // Add `{ passive: false }` option because Chrome 73 broke this.
-      const options = event === "wheel" ?  { passive: false } : undefined;
+      const options = event === "wheel" ? { passive: false } : undefined;
       this._eventTarget.addEventListener(event, processingFunction, options);
     });
     this._connected = true;
@@ -61,7 +66,9 @@ export class Dispatcher {
 
   protected _addCallbackForEvent(eventName: string, callback: Function) {
     if (this._eventNameToCallbackSet[eventName] == null) {
-      this._eventNameToCallbackSet[eventName] = new Utils.CallbackSet<Function>();
+      this._eventNameToCallbackSet[eventName] = new Utils.CallbackSet<
+        Function
+      >();
     }
     this._eventNameToCallbackSet[eventName].add(callback);
     this._connect();
