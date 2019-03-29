@@ -1,11 +1,11 @@
 {
-  "name": "plottable",
+  "name": "@nautiluslabs/plottable",
   "description": "A modular charting library built on D3",
   "version": "3.8.5",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/palantir/plottable.git"
+    "url": "https://github.com/nautiluslabsco/plottable.git"
   },
   "author": "Palantir Technologies",
   "main": "build/src/index.js",
