@@ -432,38 +432,6 @@ export class Line<X> extends XYPlot<X, number> {
     }
   }
 
-  /**
-   * Returns the PlotEntity nearest to the query point by X then by Y, or undefined if no PlotEntity can be found.
-   *
-   * @param {Point} queryPoint
-   * @returns {PlotEntity} The nearest PlotEntity, or undefined if no PlotEntity can be found.
-   */
-  public entityNearestByXThenY(queryPoint: Point): IPlotEntity {
-    let minXDist = Infinity;
-    let minYDist = Infinity;
-    let closest: IPlotEntity;
-
-    const chartBounds = this.bounds();
-    const entities = this.entities();
-    const entityLen = entities.length;
-    for (let i = 0; i < entityLen; i++) {
-      const entity = entities[i];
-      if (!Utils.Math.within(entity.position, chartBounds)) {
-        continue;
-      }
-      const xDist = Math.abs(queryPoint.x - entity.position.x);
-      const yDist = Math.abs(queryPoint.y - entity.position.y);
-
-      if (xDist < minXDist || xDist === minXDist && yDist < minYDist) {
-        closest = entity;
-        minXDist = xDist;
-        minYDist = yDist;
-      }
-    }
-
-    return closest;
-  }
-
   protected _propertyProjectors(): AttributeToProjector {
     const propertyToProjectors = super._propertyProjectors();
     propertyToProjectors["d"] = this._constructLineProjector(Plot._scaledAccessor(this.x()), Plot._scaledAccessor(this.y()));

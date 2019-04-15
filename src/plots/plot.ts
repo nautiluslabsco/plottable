@@ -918,6 +918,38 @@ export class Plot extends Component {
   }
 
   /**
+   * Returns the PlotEntity nearest to the query point by X then by Y, or undefined if no PlotEntity can be found.
+   *
+   * @param {Point} queryPoint
+   * @returns {PlotEntity} The nearest PlotEntity, or undefined if no PlotEntity can be found.
+   */
+  public entityNearestByXThenY(queryPoint: Point): Plots.IPlotEntity {
+    let minXDist = Infinity;
+    let minYDist = Infinity;
+    let closest: Plots.IPlotEntity;
+
+    const chartBounds = this.bounds();
+    const entities = this.entities();
+    const entityLen = entities.length;
+    for (let i = 0; i < entityLen; i++) {
+      const entity = entities[i];
+      if (!Utils.Math.within(entity.position, chartBounds)) {
+        continue;
+      }
+      const xDist = Math.abs(queryPoint.x - entity.position.x);
+      const yDist = Math.abs(queryPoint.y - entity.position.y);
+
+      if (xDist < minXDist || xDist === minXDist && yDist < minYDist) {
+        closest = entity;
+        minXDist = xDist;
+        minYDist = yDist;
+      }
+    }
+
+    return closest;
+  }
+
+  /**
    * @deprecated Use `entitiesInBounds` instead
    *
    * Gets the Entities that intersect the Bounds.
