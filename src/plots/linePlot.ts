@@ -424,7 +424,7 @@ export class Line<X> extends XYPlot<X, number> {
   }
 
   public entitiesAt(point: Point): IPlotEntity[] {
-    const entity = this.entityNearestByXThenY(point);
+    const { entity } = this.entityNearestByXThenY(point);
     if (entity != null) {
       return [entity];
     } else {

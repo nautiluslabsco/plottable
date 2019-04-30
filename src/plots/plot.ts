@@ -923,7 +923,7 @@ export class Plot extends Component {
    * @param {Point} queryPoint
    * @returns {PlotEntity} The nearest PlotEntity, or undefined if no PlotEntity can be found.
    */
-  public entityNearestByXThenY(queryPoint: Point): Plots.IPlotEntity {
+  public entityNearestByXThenY(queryPoint: Point): { entity: Plots.IPlotEntity, xDistance: number, yDistance: number } {
     let minXDist = Infinity;
     let minYDist = Infinity;
     let closest: Plots.IPlotEntity;
@@ -946,7 +946,7 @@ export class Plot extends Component {
       }
     }
 
-    return closest;
+    return { entity: closest, xDistance: minXDist, yDistance: minYDist };
   }
 
   /**
