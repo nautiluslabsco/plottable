@@ -11,7 +11,7 @@ import { AppliedDrawStep } from "./drawStep";
 export type CanvasDrawStep = (
   context: CanvasRenderingContext2D,
   data: any[],
-  attrToAppliedProjector: AttributeToAppliedProjector
+  attrToAppliedProjector: AttributeToAppliedProjector,
 ) => void;
 
 /**
@@ -20,14 +20,13 @@ export type CanvasDrawStep = (
  * This class is immutable (but has internal state) and shouldn't be extended.
  */
 export class CanvasDrawer implements IDrawer {
+
   /**
    * @param _context The context for a canvas that this drawer will draw to.
    * @param _drawStep The draw step logic that actually draws.
    */
-  constructor(
-    private _context: CanvasRenderingContext2D,
-    private _drawStep: CanvasDrawStep
-  ) {}
+  constructor(private _context: CanvasRenderingContext2D, private _drawStep: CanvasDrawStep) {
+  }
 
   // public for testing
   public getDrawStep() {
@@ -35,8 +34,7 @@ export class CanvasDrawer implements IDrawer {
   }
 
   public draw(data: any[], appliedDrawSteps: AppliedDrawStep[]) {
-    const projector =
-      appliedDrawSteps[appliedDrawSteps.length - 1].attrToAppliedProjector;
+    const projector  = appliedDrawSteps[appliedDrawSteps.length - 1].attrToAppliedProjector;
 
     // don't support animations for now; just draw the last draw step immediately
     this._context.save();
@@ -64,7 +62,7 @@ export const ContextStyleAttrs = [
   "stroke-opacity",
   "stroke-width",
   "stroke",
-  "stroke-dasharray"
+  "stroke-dasharray",
 ];
 
 /**
@@ -76,12 +74,7 @@ export function resolveAttributesSubsetWithStyles(projector: AttributeToAppliedP
   return resolveAttributes(projector, attrKeys, datum, index);
 }
 
-export function resolveAttributes(
-  projector: AttributeToAppliedProjector,
-  attrKeys: string[],
-  datum: any,
-  index: number
-) {
+export function resolveAttributes(projector: AttributeToAppliedProjector, attrKeys: string[], datum: any, index: number) {
   const attrs: Record<string, any> = {};
   for (const attrKey of attrKeys) {
     if (projector.hasOwnProperty(attrKey)) {
@@ -106,18 +99,14 @@ export interface IFillStyle {
 }
 
 function getStrokeOpacity(style: Record<string, any>) {
-  const baseOpacity =
-    style["opacity"] != null ? parseFloat(style["opacity"]) : 1;
-  const strokeOpacity =
-    style["stroke-opacity"] != null ? parseFloat(style["stroke-opacity"]) : 1;
+  const baseOpacity = style["opacity"] != null ? parseFloat(style["opacity"]) : 1;
+  const strokeOpacity = style["stroke-opacity"] != null ? parseFloat(style["stroke-opacity"]) : 1;
   return strokeOpacity * baseOpacity;
 }
 
 function getFillOpacity(style: Record<string, any>) {
-  const baseOpacity =
-    style["opacity"] != null ? parseFloat(style["opacity"]) : 1;
-  const fillOpacity =
-    style["fill-opacity"] != null ? parseFloat(style["fill-opacity"]) : 1;
+  const baseOpacity = style["opacity"] != null ? parseFloat(style["opacity"]) : 1;
+  const fillOpacity = style["fill-opacity"] != null ? parseFloat(style["fill-opacity"]) : 1;
   return fillOpacity * baseOpacity;
 }
 
@@ -138,40 +127,27 @@ export function getStrokeDashArray(style: Record<string, any>): number[] {
   return [];
 }
 
-export function renderArea(
-  context: CanvasRenderingContext2D,
-  d3Area: d3.Area<any>,
-  data: any[],
-  style: IFillStyle & IStrokeStyle
-) {
-  context.save();
-  context.beginPath();
-  d3Area.context(context);
-  d3Area(data);
-  context.lineJoin = "round";
-  renderPathWithStyle(context, style);
-  context.restore();
+export function renderArea(context: CanvasRenderingContext2D, d3Area: d3.Area<any>, data: any[], style: IFillStyle & IStrokeStyle) {
+    context.save();
+    context.beginPath();
+    d3Area.context(context);
+    d3Area(data);
+    context.lineJoin = "round";
+    renderPathWithStyle(context, style);
+    context.restore();
 }
 
-export function renderLine(
-  context: CanvasRenderingContext2D,
-  d3Line: d3.Line<any>,
-  data: any[],
-  style: IStrokeStyle
-) {
-  context.save();
-  context.beginPath();
-  d3Line.context(context);
-  d3Line(data);
-  context.lineJoin = "round";
-  renderPathWithStyle(context, style);
-  context.restore();
+export function renderLine(context: CanvasRenderingContext2D, d3Line: d3.Line<any>, data: any[], style: IStrokeStyle) {
+    context.save();
+    context.beginPath();
+    d3Line.context(context);
+    d3Line(data);
+    context.lineJoin = "round";
+    renderPathWithStyle(context, style);
+    context.restore();
 }
 
-export function renderPathWithStyle(
-  context: CanvasRenderingContext2D,
-  style: Record<string, any>
-) {
+export function renderPathWithStyle(context: CanvasRenderingContext2D, style: Record<string, any>) {
   if (style["stroke"]) {
     context.lineWidth = getStrokeWidth(style);
     const strokeColor = d3.color(style["stroke"]);
